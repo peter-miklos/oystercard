@@ -6,17 +6,18 @@ describe Journey do
   let(:exit_station) { double :exit_station }
   let(:oyster)  { double :oyster }
 
-  describe 'when missing entry or exit station' do
+  context 'when no entry station' do
+    it 'charges a penalty fare of 6' do
+      subject.finish(exit_station)
+      expect(subject.fare).to eq(Journey::PENALTY_FARE)
+    end
+  end
 
-      it 'charges a penalty fare of 6' do
-        subject.finish(exit_station)
-        expect(subject.fare).to eq(Journey::PENALTY_FARE)
-      end
-
-      it 'charges a penalty fare of 6' do
-        subject.start(entry_station)
-        expect(subject.fare).to eq(Journey::PENALTY_FARE)
-      end
+  context 'when no exit station' do
+    it 'charges a penalty fare of 6' do
+      subject.start(entry_station)
+      expect(subject.fare).to eq(Journey::PENALTY_FARE)
+    end
   end
 
   describe 'when touched in and out' do
@@ -30,13 +31,8 @@ describe Journey do
         expect(subject.journey).to include(:entry_station => entry_station, :exit_station => exit_station)
       end
 
-      describe '#fare' do
-        it 'should deduct minimum fare' do
-          expect(subject.fare).to eq(Journey::MIN_FARE)
-        end
-
+      it 'should deduct minimum fare' do
+        expect(subject.fare).to eq(Journey::MIN_FARE)
       end
-
-    end
-
+   end
 end
