@@ -2,8 +2,8 @@ require 'oystercard'
 
 describe Oystercard do
 
-  let(:station) { double :station }
-  let(:station_two) { double :station_two }
+  let(:entry_station) { double :entry_station }
+  let(:exit_station) { double :exit_station }
 
   context do 'when initialized'
     it 'has a balance of 0' do
@@ -39,7 +39,7 @@ describe Oystercard do
 
       it 'raises an error' do
         message = 'balance less than £1 - please top up'
-        expect{subject.touch_in(station)}.to raise_error message
+        expect{subject.touch_in(entry_station)}.to raise_error message
       end
 
     end
@@ -50,20 +50,20 @@ describe Oystercard do
 
     before(:each) do
       subject.top_up(10)
-      subject.touch_in(station)
+      subject.touch_in(entry_station)
     end
 
     it 'deducts minimum fare from oyster' do
-      expect {subject.touch_out(station_two)}.to change{subject.balance}.by(-Oystercard::MIN_FARE)
+      expect {subject.touch_out(exit_station)}.to change{subject.balance}.by(-Oystercard::MIN_FARE)
     end
 
   end
 
   it 'remembers a full journey' do
     subject.top_up(10)
-    subject.touch_in(station)
-    subject.touch_out(station_two)
-    expect(subject.journeys).to include(:entry_station => station, :exit_station => station_two)
+    subject.touch_in(entry_station)
+    subject.touch_out(exit_station)
+    expect(subject.journeys).to include(:entry_station => entry_station, :exit_station => exit_station)
   end
 
 end
