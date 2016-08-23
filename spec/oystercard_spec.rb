@@ -15,20 +15,6 @@ describe Oystercard do
     allow(Journey).to receive(:new) {journey}
     allow(journey).to receive(:fare).and_return(1)
     allow(journey).to receive(:finish).and_return(journey)
-  end
-
-  describe "initialize" do
-    it "creates an instance of the card and the balance should be zero" do
-      expect(other_card.balance).to eq 0
-    end
-
-    it "creates an in_journey instance variable with default of false" do
-      expect(card.in_journey?).to eq false
-    end
-
-    it "creates an empty array of stations" do
-      expect(card.journeys).to be_empty
-    end
 
   end
 
@@ -45,19 +31,6 @@ describe Oystercard do
     end
   end
 
-  describe "#in_journey?" do
-
-    it "returns false if we call it after instantiated the instance" do
-      expect(card).not_to be_in_journey
-    end
-
-    it "returns true after touch in" do
-      card.touch_in(station1)
-      expect(card).to be_in_journey
-    end
-
-  end
-
   describe "#touch_in" do
 
     it "raises an error when try to touch in with balance less than £1" do
@@ -68,7 +41,8 @@ describe Oystercard do
 
     it "remembers the station that was entered when touching in" do
       card.touch_in(station1)
-      expect(card.entry_station).to eq station1
+      allow(journey).to receive(:complete?) {false}
+      expect(card.journey).not_to be_complete
     end
 
     it "charges the penalty fare if card was not touched out" do
@@ -78,21 +52,11 @@ describe Oystercard do
       card.touch_in(station1)
       expect(card.balance).to eq final_balance
     end
-
-    it "stores an incomplete journey in journey log" do
-      card.touch_in(station1)
-      expect(card.journeys).to be_include(journey)
-    end
   end
 
   describe "#touch_out" do
     before(:each) do
       card.touch_in(station1)
-    end
-
-    it "called, then the #in_journey? method returns false" do
-      card.touch_out(station1)
-      expect(card).not_to be_in_journey
     end
 
     it "charges the minimum fare" do
@@ -109,12 +73,12 @@ describe Oystercard do
       expect(card.balance).to eq final_balance
     end
 
-    it "sets entry_station ivar to nil when touching out" do
-      card.touch_out(station1)
-      expect(card.entry_station).to eq nil
-    end
+     it "sets journey instance variable to nil when touching out" do
+       card.touch_out(station1)
+       expect(card.journey).to be_nil
+     end
 
-    it "stores the exit station in the journey, stored in the journey log" do
+    it "stores the exit station in the journey" do
       card.touch_out(station2)
       expect(card.journeys).to be_include(journey)
     end
