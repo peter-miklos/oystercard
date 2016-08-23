@@ -2,54 +2,44 @@ require 'oystercard'
 
 describe Oystercard do
 
-  subject(:oyster) { described_class.new }
   let(:station) { double :station }
+  let(:station_two) { double :station_two }
 
-  it 'initializes with a balance of 0' do
-    expect(oyster.balance).to eq(0)
+  context do 'when initialized'
+    it 'has a balance of 0' do
+      expect(subject.balance).to eq(0)
+    end
+
+    it 'has an empty list of journeys' do
+      expect(subject.journeys).to be_empty
+    end
   end
 
   describe '#top_up' do
 
     it 'increases balance by amount' do
-      oyster.top_up(10)
-      expect(oyster.balance).to eq 10
+      subject.top_up(10)
+      expect(subject.balance).to eq 10
     end
 
     context 'balance is greater than max limit' do
 
       it 'raises an error' do
         message = "balance cannot exceed £#{Oystercard::DEFAULT_MAX}"
-        expect{oyster.top_up(Oystercard::DEFAULT_MAX+10)}.to raise_error message
+        expect{subject.top_up(Oystercard::DEFAULT_MAX+10)}.to raise_error message
       end
-      
+
     end
 
   end
 
   describe '#touch_in' do
 
-    context 'balance is greater than min balance' do
-
-      subject(:oyster) {described_class.new(10)}
-
-      it 'after touching in, in journey equals true' do
-        oyster.touch_in(station)
-        expect(oyster.in_journey?).to be(true)
-      end
-
-      it 'remembers which station entered' do
-        oyster.touch_in(station)
-        expect(oyster.entry_station).to eq(station)
-      end
-
-    end
-
     context 'balance is less than min balance' do
 
       it 'raises an error' do
         message = 'balance less than £1 - please top up'
-        expect{oyster.touch_in(station)}.to raise_error message
+        expect{subject.touch_in(station)}.to raise_error message
       end
 
     end
@@ -59,19 +49,21 @@ describe Oystercard do
   describe '#touch_out' do
 
     before(:each) do
-      oyster.top_up(10)
-      oyster.touch_in(station)
-    end
-
-    it 'after touching out, in journey equals false' do
-      oyster.touch_out
-      expect(oyster.in_journey?).to be(false)
+      subject.top_up(10)
+      subject.touch_in(station)
     end
 
     it 'deducts minimum fare from oyster' do
-      expect {oyster.touch_out}.to change{oyster.balance}.by(-Oystercard::MIN_BALANCE)
+      expect {subject.touch_out(station_two)}.to change{subject.balance}.by(-Oystercard::MIN_FARE)
     end
 
+  end
+
+  it 'remembers a full journey' do
+    subject.top_up(10)
+    subject.touch_in(station)
+    subject.touch_out(station_two)
+    expect(subject.journeys).to include(:entry_station => station, :exit_station => station_two)
   end
 
 end
