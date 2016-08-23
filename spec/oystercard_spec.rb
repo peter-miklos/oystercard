@@ -4,6 +4,7 @@ describe Oystercard do
 
   let(:entry_station) { double :entry_station }
   let(:exit_station) { double :exit_station }
+  let(:journey) { double :journey, fare: 1 }
 
   context do 'when initialized'
     it 'has a balance of 0' do
@@ -54,7 +55,7 @@ describe Oystercard do
     end
 
     it 'deducts minimum fare from oyster' do
-      expect {subject.touch_out(exit_station)}.to change{subject.balance}.by(-Oystercard::MIN_FARE)
+      expect {subject.touch_out(exit_station)}.to change{subject.balance}.by(-1)
     end
 
   end
