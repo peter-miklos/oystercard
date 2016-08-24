@@ -48,7 +48,7 @@ class Oystercard
       store_journey
       deduct(@journey.fare)
     else
-      @journey = Journey.new(entry_station: station, exit_station: nil)
+      @journey = Journey.new(entry_station: station)
     end
   end
 
@@ -57,7 +57,7 @@ class Oystercard
       @journey.finish(station)
       store_journey
     else
-      @journey = Journey.new(entry_station: nil, exit_station: station)
+      @journey = Journey.new(exit_station: station)
       store_journey
     end
   end
