@@ -17,12 +17,10 @@ class Journey
     @journey[:exit_station] = station
   end
 
+# why is fare returning 6 when called explicitly after a full journey in irb?
+# will be an issue if want to check our last fare
   def fare
-    if journey.length == 2
-      MIN_FARE
-    else
-      PENALTY_FARE
-    end
+    journey.length == 2 ? MIN_FARE : PENALTY_FARE
   end
 
 end
