@@ -4,8 +4,8 @@ describe Journey do
 
 let(:station1) { double :station1}
 let(:station2) { double :station2}
-let(:journey1) {described_class.new(entry_station: station1, exit_station: nil)}
-let(:journey2) {described_class.new(entry_station: nil, exit_station: station2)}
+let(:journey1) {described_class.new(entry_station: station1)}
+let(:journey2) {described_class.new(exit_station: station2)}
 
 
   describe "#finish" do
