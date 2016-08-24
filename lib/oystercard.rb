@@ -4,7 +4,6 @@ require_relative "station.rb"
 class Oystercard
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
-  MINIMUM_CHARGE = 1
 
   attr_reader :balance, :journeys, :journey
 
@@ -46,10 +45,9 @@ class Oystercard
   def validate_touch_in(station)
     if @journey
       store_journey
-      deduct(@journey.fare)
-    else
-      @journey = Journey.new(entry_station: station)
+      deduct(@journey.fare) #a penalty fare will be deducted here
     end
+    @journey = Journey.new(entry_station: station)
   end
 
   def validate_touch_out(station)
