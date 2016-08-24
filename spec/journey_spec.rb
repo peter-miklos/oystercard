@@ -4,7 +4,6 @@ describe Journey do
 
   let(:entry_station) { double :entry_station }
   let(:exit_station) { double :exit_station }
-  let(:oyster)  { double :oyster }
 
   context 'when no entry station' do
     it 'charges a penalty fare of 6' do
