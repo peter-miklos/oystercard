@@ -26,12 +26,18 @@ class Oystercard
   end
 
   def touch_out(station)
+    @current_journey = Journey.new unless current_journey
     current_journey.finish(station)
-    deduct(current_journey.fare)
-    @journeys << current_journey
+    finish_touch_out
   end
 
   private
+
+  def finish_touch_out
+    @journeys << current_journey
+    deduct(current_journey.fare)
+    @current_journey = nil
+  end
 
   def deduct(amount)
     @balance -= amount

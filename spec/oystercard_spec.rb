@@ -54,6 +54,25 @@ describe Oystercard do
       expect(subject.current_journey).to eq(current_journey)
     end
 
+    context "two consecutive touch ins" do
+
+      before(:each) do
+        subject.top_up(10)
+        subject.touch_in(entry_station)
+        subject.touch_in(entry_station)
+      end
+
+      it "should deduct the penalty fare from balance" do
+        expect(subject.balance).to eq 4
+      end
+
+      it "should store the incomplete journey" do
+        expect(subject.journeys).to be_include(current_journey)
+      end
+
+    end
+
+
   end
 
   describe '#touch_out' do
@@ -61,18 +80,26 @@ describe Oystercard do
       subject.top_up(10)
     end
 
-    it 'current journey should be nil' do
+    it 'current journey should be nil after touch out' do
       subject.touch_out(exit_station)
       expect(subject.current_journey).to eq nil
     end
 
     context 'when not touched in' do
-      it 'incomplete journey should be stored in journeys' do
+
+      before(:each) do
         allow(current_journey).to receive(:finish)
+        allow(current_journey).to receive(:fare) { 6 }
         subject.touch_out(exit_station)
+      end
+
+      it 'incomplete journey should be stored in journeys' do
         expect(subject.journeys).to be_include(current_journey)
       end
 
+      it "should charge the penalty fare" do
+        expect(subject.balance).to eq 4
+      end
     end
 
     context 'when touched in' do
