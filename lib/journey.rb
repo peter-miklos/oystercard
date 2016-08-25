@@ -18,8 +18,7 @@ class Journey
   end
 
   def fare
-    return MINIMUM_CHARGE if complete?
-    PENALTY_CHARGE
+    complete? ? MINIMUM_CHARGE : PENALTY_CHARGE
   end
 
   private

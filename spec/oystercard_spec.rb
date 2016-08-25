@@ -10,11 +10,17 @@ describe Oystercard do
   let(:Journey) {double :Journey}
   let(:journey) {double :journey}
 
+  let(:JourneyLog) {double :JourneyLog}
+  let(:journey_log) {double :journey_log}
+
   before(:each) do
     card.top_up(10)
     allow(Journey).to receive(:new) {journey}
     allow(journey).to receive(:fare).and_return(1)
     allow(journey).to receive(:finish).and_return(journey)
+    allow(JourneyLog).to receive(:new) {journey_log}
+
+
 
   end
 
@@ -80,13 +86,13 @@ describe Oystercard do
 
     it "stores the exit station in the journey" do
       card.touch_out(station2)
-      expect(card.journeys).to be_include(journey)
+      expect(card.journey_log.get_list).to be_include(journey)
     end
 
     it "stores the incomplete journey in the journey log" do
       card.touch_out(station2)
       card.touch_out(station1)
-      expect(card.journeys).to be_include(journey)
+      expect(card.journey_log.get_list).to be_include(journey)
     end
   end
 end

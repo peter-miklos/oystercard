@@ -5,12 +5,13 @@ class Oystercard
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
 
-  attr_reader :balance, :journeys, :journey
+  attr_reader :balance, :journey, :journey_log
 
   def initialize
    @balance = 0
-   @journeys = []
+   #@journeys = []
    @journey = nil
+   @journey_log = JourneyLog.new
   end
 
   def top_up(amount)
@@ -20,16 +21,18 @@ class Oystercard
 
   def touch_in(station)
     fail "Your balance is less than £1" if below_limit?
-    validate_touch_in(station)
+    finish_journey if journey_log.current_journey_exists? #ezt megnezni irb-ben
+    @journey = journey_log.start(station)
   end
 
   def touch_out(station)
-    validate_touch_out(station)
-    deduct(@journey.fare)
-    @journey = nil
+    @journey = journey_log.start unless journey_log.current_journey_exists?
+    journey_log.finish(station)
+    finish_journey
   end
 
   private
+
   def below_limit?
     balance < MINIMUM_BALANCE
   end
@@ -38,25 +41,9 @@ class Oystercard
     @balance -= amount
   end
 
-  def store_journey
-    @journeys << @journey
-  end
-
-  def validate_touch_in(station)
-    if @journey
-      store_journey
-      deduct(@journey.fare) #a penalty fare will be deducted here
-    end
-    @journey = Journey.new(entry_station: station)
-  end
-
-  def validate_touch_out(station)
-    if @journey
-      @journey.finish(station)
-      store_journey
-    else
-      @journey = Journey.new(exit_station: station)
-      store_journey
-    end
+  def finish_journey
+    #@journeys << @journey
+    deduct(journey_log.get_list[-1].fare)
+    @journey = nil
   end
 end
