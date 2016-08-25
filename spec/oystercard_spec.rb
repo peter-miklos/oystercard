@@ -16,15 +16,11 @@ describe Oystercard do
     allow(journey).to receive(:finish).and_return(journey)
   end
 
-  it 'initializes with a balance of 0' do
-    expect(oyster.balance).to eq(0)
-  end
-
   describe '#top_up' do
 
     it 'increases balance by amount' do
-      oyster.top_up(10)
-      expect(oyster.balance).to eq 10
+      oyster.top_up(0.9)
+      expect{oyster.touch_in(entry_station)}.to raise_error(RuntimeError)
     end
 
     context 'balance is greater than max limit' do
@@ -42,7 +38,7 @@ describe Oystercard do
 
     context 'balance is greater than min balance' do
 
-      subject(:oyster) { described_class.new(10)}
+      subject(:oyster) { described_class.new(6)}
 
       before(:each) do
         oyster.touch_in(entry_station)
@@ -58,7 +54,7 @@ describe Oystercard do
 
       it 'deducts penalty fare for incomplete journey' do
         allow(journey).to receive(:fare) { 6 }
-        expect {oyster.touch_in(station)}.to change{oyster.balance}.by(-6)
+        expect{oyster.touch_in(entry_station)}.to raise_error(RuntimeError)
       end
 
     end
@@ -77,7 +73,7 @@ describe Oystercard do
   describe '#touch_out' do
 
     before(:each) do
-      oyster.top_up(10)
+      oyster.top_up(1.9)
       oyster.touch_in(station)
     end
 
@@ -87,13 +83,15 @@ describe Oystercard do
     end
 
     it 'deducts minimum fare as calculated in journey class' do
-      expect {oyster.touch_out(station)}.to change{oyster.balance}.by(-1)
+      oyster.touch_out(exit_station)
+      expect{oyster.touch_in(entry_station)}.to raise_error(RuntimeError)
     end
 
     it 'deducts a penalty fare as calculated in journey class' do
-      allow(journey).to receive(:fare).and_return(6)
+      oyster.top_up(5)
       oyster.touch_out(station)
-      expect {oyster.touch_out(station)}.to change{oyster.balance}.by(-6)
+      allow(journey).to receive(:fare).and_return(6)
+      expect{oyster.touch_out(exit_station)}.to raise_error(RuntimeError)
     end
 
   end

@@ -3,6 +3,8 @@ require_relative 'station'
 
 class Oystercard
 
+  attr_reader :journey_log
+
   DEFAULT_MAX = 90
 
   def initialize(balance = 0, max_balance = DEFAULT_MAX)
@@ -42,9 +44,10 @@ class Oystercard
   private
 
   def deduct(amount)
+    fail "Insufficient funding" if ((balance - amount) < Journey::MIN_FARE && amount == Journey::PEN_FARE)
     @balance -= amount
   end
 
-  attr_reader :balance, :max_balance, :journey_log
+  attr_reader :balance, :max_balance
 
 end
