@@ -1,7 +1,5 @@
 class Journey
 
-attr_reader :entry_station, :exit_station
-
   MIN_FARE = 1
   PEN_FARE = 6
 
@@ -20,11 +18,11 @@ attr_reader :entry_station, :exit_station
   end
 
   def fare
-    if complete?
-      MIN_FARE
-    else
-      PEN_FARE
-    end
+    complete? ? MIN_FARE : PEN_FARE
   end
+
+  private
+
+  attr_reader :entry_station, :exit_station
 
 end

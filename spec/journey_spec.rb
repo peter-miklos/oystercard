@@ -3,24 +3,11 @@ require 'journey'
 describe Journey do
 
 subject(:journey) { described_class.new(station1, nil) }
-subject(:journey2) { described_class.new(nil, station2)}
-let(:station1) { double :station1 }
-let(:station2) { double :station2 }
-
-  describe '#given an entry station' do
-
-    it 'should record the entry station' do
-      expect(journey.entry_station).to eq station1
-    end
-
-  end
+subject(:journey2) { described_class.new(nil, station2) }
+let(:station1) { double :station }
+let(:station2) { double :station }
 
   describe '#finish' do
-
-    it 'should record the exit station' do
-      journey.finish(station2)
-      expect(journey.exit_station).to eq station2
-    end
 
     it 'should return the current journey' do
       expect(journey.finish(station2)).to eq journey
@@ -35,8 +22,12 @@ let(:station2) { double :station2 }
       expect(journey.fare).to eq Journey::MIN_FARE
     end
 
-    it 'should be able to charge a penalty' do
+    it 'should be able to charge a penalty if no exit_station' do
       expect(journey.fare).to eq Journey::PEN_FARE
+    end
+
+    it 'should be able to charge a penalty if no entry_station' do
+      expect(journey2.fare).to eq Journey::PEN_FARE
     end
 
   end
