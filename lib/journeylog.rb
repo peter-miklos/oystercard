@@ -18,7 +18,6 @@ class JourneyLog
     end
     @current_journey = journey(station)
     @journey_log << current_journey
-    #current_journey(station)
     fare
   end
 

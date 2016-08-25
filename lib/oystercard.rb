@@ -12,7 +12,6 @@ class Oystercard
     @balance = balance
     @max_balance = max_balance
     @journey_log = JourneyLog.new
-    #@journey = nil
   end
 
   def top_up(amount)
@@ -23,36 +22,10 @@ class Oystercard
   def touch_in(station)
     fail "balance less than £#{Journey::MIN_FARE} - please top up" if balance < Journey::MIN_FARE
     deduct(journey_log.start(station))
-
-    #deduct(journey_log.fare) if journey_log.in_journey?
-    #deduct(@journey.fare) if in_journey?
-    #journey_log.start(station)
-
-    #@journey = Journey.new(station, nil)
-    #@journey_log << @journey
   end
 
   def touch_out(station)
-    # if !journey_log.in_journey?
-    #   journey_log.start
-    #   deduct(journey_log.fare)
-    #   journey_log.finish(station)
-    # else
-    #   journey_log.finish(station)
-    #   deduct(journey_log.fare)
-    # end
-
     deduct(journey_log.finish(station))
-
-
-    # if !in_journey
-    #   @journey = Journey.new(nil, station)
-    #   @journey_log << @journey
-    # else
-    #   @journey_log[-1].finish(station)
-    # end
-    # deduct(@journey.fare)
-    #@journey = nil
   end
 
   private
