@@ -4,7 +4,7 @@ describe Oystercard do
 
   subject(:empty_card) { described_class.new }
   subject(:card) { described_class.new(journey_log) }
-  let(:journey_log) {double :JourneyLog, get_last_fare: 1, in_journey?: true, start: nil, finish: nil}
+  let(:journey_log) {double :JourneyLog, outstanding_charges: 1, in_journey?: true, start: nil, finish: nil}
   let(:entry) { double :station }
   let(:exit) { double :station }
 
@@ -57,25 +57,8 @@ describe Oystercard do
     end
 
     it 'charges minimum fare if card is touched in and touched out' do
-    expect { card.touch_out(exit) }.to change { card.balance }.by( -Oystercard::MINIMUM_FARE)
+    expect { card.touch_out(exit) }.to change { card.balance }.by(-1)
     end
 
   end
-  context 'charging penality fares' do
-    before do
-      card.top_up(50)
-    end
-
-  it 'charges penality fare if card is touched out without being touched in' do
-    allow(journey_log).to receive(:in_journey?).and_return(false)
-      expect { card.touch_out(exit) }.to change { card.balance }.by( -(Oystercard::PENALTY_FARE + Oystercard::MINIMUM_FARE))
-  end
-
-  it 'should charge penalty on double touch in ' do
-    allow(journey_log).to receive(:in_journey?).and_return(true)
-    expect { card.touch_in(entry) }.to change { card.balance }.by( -(Oystercard::PENALTY_FARE))
-  end
-end
-
-
 end

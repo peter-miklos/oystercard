@@ -1,16 +1,21 @@
 class JourneyLog
 
+  PENALTY_FARE = 6
+
   def initialize(journey_class = Journey)
     @journey_class = journey_class
     @current_journey = nil
     @journey_history = []
+    @outstanding_charges = 0
   end
 
   def start(entry_station)
+    no_touch_out if in_journey?
     @current_journey = @journey_class.new(entry_station)
   end
 
   def finish(exit_station)
+    no_touch_in unless in_journey?
     current_journey.finish(exit_station)
     record_journey
     reset_journey
@@ -20,8 +25,10 @@ class JourneyLog
     !!current_journey
   end
 
-  def get_last_fare
-    @journey_history[-1].fare
+  def outstanding_charges
+    x = @outstanding_charges
+    @outstanding_charges = 0
+    x
   end
 
   private
@@ -34,6 +41,16 @@ class JourneyLog
 
   def reset_journey
     @current_journey = nil
+  end
+
+  def no_touch_out
+    @outstanding_charges += PENALTY_FARE
+    finish(nil)
+  end
+
+  def no_touch_in
+    start(nil)
+    @outstanding_charges += PENALTY_FARE
   end
 
 end
