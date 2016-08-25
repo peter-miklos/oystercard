@@ -41,4 +41,21 @@ describe JourneyLog do
 
   end
 
+  describe '#in_journey?' do
+
+    it 'after starting, in_journey? equals true' do
+      journeylog.start(station1)
+      expect(journeylog.in_journey?).to be(true)
+    end
+
+    it 'after finishing, in_journey? equals false' do
+      journeylog.start(station1)
+      journeylog.finish(station2)
+      expect(journeylog.in_journey?).to be(false)
+    end
+
+  end
+
+  it {is_expected.to respond_to(:fare)}
+
 end

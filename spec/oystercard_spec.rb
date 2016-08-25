@@ -9,14 +9,11 @@ describe Oystercard do
   let(:exit_station) { double :station }
   let(:JourneyLog) { double :JourneyLog }
   let(:journeylog) { double :journeylog }
-  let(:journey) { double :journey}
 
   before(:each) do
     allow(JourneyLog).to receive(:new).and_return(journeylog)
-    allow(journeylog).to receive(:current_journey) {journey}
-    allow(journeylog).to receive(:finish)
-    allow(journeylog).to receive(:start)
-    allow(journey).to receive(:fare) { 1 }
+    allow(journeylog).to receive(:finish) {1}
+    allow(journeylog).to receive(:start) {0}
   end
 
   describe '#top_up' do
@@ -47,16 +44,8 @@ describe Oystercard do
         oyster.touch_in(entry_station)
       end
 
-      # it 'after touching in, in_journey equals true' do
-      #   expect(oyster.in_journey?).to be(true)
-      # end
-
-      # it 'adds new journey to array of journeys' do
-      #   expect(oyster.journey_log).to be_include(journey)
-      # end
-
       it 'deducts penalty fare for incomplete journey' do
-        allow(journey).to receive(:fare) { 6 }
+        allow(journeylog).to receive(:start) {6}
         expect{oyster.touch_in(entry_station)}.to raise_error(RuntimeError)
       end
 
@@ -80,33 +69,18 @@ describe Oystercard do
       oyster.touch_in(station)
     end
 
-    # it 'after touching out, in_journey equals false' do
-    #   oyster.touch_out(station)
-    #   expect(oyster.in_journey?).to be(false)
-    # end
-
     it 'deducts minimum fare as calculated in journey class' do
       oyster.touch_out(exit_station)
       expect{oyster.touch_in(entry_station)}.to raise_error(RuntimeError)
     end
 
     it 'deducts a penalty fare as calculated in journey class' do
-      oyster.top_up(5)
+      oyster.top_up(6)
       oyster.touch_out(station)
-      allow(journey).to receive(:fare).and_return(6)
+      allow(journeylog).to receive(:finish) {6}
       expect{oyster.touch_out(exit_station)}.to raise_error(RuntimeError)
     end
 
   end
 
-  # describe 'store journey' do
-
-    # it 'touching in and out creates one journey' do
-    #   oyster.top_up(10)
-    #   oyster.touch_in(entry_station)
-    #   oyster.touch_out(exit_station)
-    #   expect(oyster.journey_log).to be_include(journey)
-    # end
-
-  # end
 end

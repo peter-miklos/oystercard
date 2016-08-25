@@ -1,3 +1,5 @@
+require_relative 'journey'
+
 class JourneyLog
 
   attr_reader :current_journey, :journey_log
@@ -9,20 +11,43 @@ class JourneyLog
 
 
   def start(station = nil)
-    #current_journey(station)
+    fare = 0
+    if current_journey
+      fare = @current_journey.fare
+      @current_journey = nil
+    end
     @current_journey = journey(station)
     @journey_log << current_journey
+    #current_journey(station)
+    fare
   end
 
   def finish(station)
-    @current_journey.finish(station)
-    @journey_log.pop
-    @journey_log << current_journey
+    fare = 0
+    if !current_journey
+      @current_journey = journey(nil)
+      @current_journey.finish(station)
+      @journeys << current_journey
+      fare = @current_journey.fare
+    else
+      @current_journey.finish(station)
+      @journey_log.pop
+      @journey_log << current_journey
+    end
     @current_journey = nil
+    fare
   end
 
   def journeys
     @journey_log.dup
+  end
+
+  def fare
+    @current_journey.fare
+  end
+
+  def in_journey?
+    !!@current_journey
   end
 
   private
