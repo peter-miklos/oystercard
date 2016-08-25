@@ -16,13 +16,12 @@ attr_reader :fare
 
   def finish(exit_station)
     @exit_station = exit_station
+    calculate_fare
   end
 
-  def entry_station
-    @entry_station
-  end
+  private
 
-  def exit_station
-    @exit_station
+  def calculate_fare
+    @fare = MINIMUM_FARE + (@entry_station.zone - @exit_station.zone).abs
   end
 end
