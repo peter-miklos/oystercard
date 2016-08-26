@@ -14,7 +14,7 @@ class JourneyLog
 
   def finish(exit_station)
     start(nil) unless in_journey?
-    @outstanding_charges = current_journey.finish(exit_station) #1
+    @outstanding_charges = current_journey.finish(exit_station)
     record_journey
     reset_journey
   end
@@ -40,14 +40,4 @@ class JourneyLog
   def reset_journey
     @current_journey = nil
   end
-  #
-  # def no_touch_out
-  #   finish(nil)
-  # end
-  #
-  #
-  # def no_touch_in
-  #   start(nil)
-  # end
-
 end

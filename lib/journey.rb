@@ -1,14 +1,6 @@
-# station of entry
-# station of exit
-
-# fare - how much journey costs
-
 class Journey
   MINIMUM_FARE = 1
   PENALTY_FARE = 6
-
-
-attr_reader :fare
 
   def initialize(entry_station)
     @entry_station = entry_station
@@ -22,6 +14,8 @@ attr_reader :fare
   end
 
   private
+
+  attr_reader :fare
 
   def calculate_fare
     if @entry_station != nil and @exit_station != nil

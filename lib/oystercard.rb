@@ -1,12 +1,11 @@
 require_relative 'journey_log'
-require_relative 'Journey'
 require_relative 'Station.rb'
 
 class Oystercard
   MINIMUM_BALANCE = 7
   MAXIMUM_LIMIT = 90
 
-  attr_reader :balance
+
 
   def initialize(journey_log = JourneyLog.new)
     @balance = 0
@@ -31,6 +30,8 @@ class Oystercard
   end
 
   private
+
+    attr_reader :balance
 
   def start_journey(station)
     @journey_log.start(station)

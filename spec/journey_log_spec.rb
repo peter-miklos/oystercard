@@ -3,23 +3,9 @@ require 'journey_log'
 describe JourneyLog do
   subject(:journey_log) {described_class.new(journey_class)}
   let(:journey_class) {double(:journey_class, new: journey)}
-  let(:journey) {double(:journey, finish: nil)}
+  let(:journey) {double(:journey, finish: 1)}
   let(:entry_station) {double(:entry_station)}
   let(:exit_station) {double(:exit_station)}
-
-  describe 'initialization' do
-    it 'saves the journey class to an instance variable' do
-      expect(journey_log.instance_variable_get(:@journey_class)).to eq journey_class
-    end
-    it 'does not have a current journey saved' do
-      expect(journey_log.instance_variable_get(:@current_journey)).to be_nil
-    end
-    describe 'in_journey?' do
-      it 'Is in journey' do
-        expect(journey_log.in_journey?).to be false
-      end
-    end
-  end
 
   describe 'start' do
     before do
@@ -61,7 +47,14 @@ describe JourneyLog do
         expect(journey_log.in_journey?).to be false
       end
     end
-
   end
+
+    describe 'outstanding charges' do
+      it 'returns the outstanding charge' do
+      journey_log.start(entry_station)
+      journey_log.finish(exit_station)
+        expect(journey_log.outstanding_charges).to eq 1
+      end
+    end
 
 end

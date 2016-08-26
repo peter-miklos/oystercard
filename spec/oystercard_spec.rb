@@ -9,15 +9,7 @@ describe Oystercard do
   let(:exit) { double :station }
 
 
-  it 'Describes an account when it is first opened' do
-    expect(empty_card.balance).to eq (0)
-  end
-
-
   describe '#top_up' do
-    it 'tops up Oystercard by amount 20' do
-      expect { empty_card.top_up(20) }.to change{empty_card.balance}.by(20)
-    end
 
     it 'raises an error when top up limit is exceeded' do
       maximum_limit = Oystercard::MAXIMUM_LIMIT
@@ -25,8 +17,6 @@ describe Oystercard do
       expect{ empty_card.top_up(1) }.to raise_error 'Top up limited exceeded'
     end
   end
-
-
 
   describe '#touch_in' do
     before(:each) do
@@ -47,7 +37,7 @@ describe Oystercard do
   describe '#touch_out' do
 
     before(:each) do
-      card.top_up(10)
+      card.top_up(7.9)
       card.touch_in(entry)
     end
 
@@ -57,7 +47,8 @@ describe Oystercard do
     end
 
     it 'charges minimum fare if card is touched in and touched out' do
-    expect { card.touch_out(exit) }.to change { card.balance }.by(-1)
+      card.touch_out(exit)
+      expect { card.touch_in(entry) }.to raise_error (RuntimeError)
     end
 
   end
