@@ -31,9 +31,6 @@ describe JourneyLog do
     it 'saves the current journey' do
       expect(journey_log.instance_variable_get(:@current_journey)).to eq journey
     end
-    it 'charges penalty fare when journey starts again' do
-      expect {journey_log.start(entry_station)}.to change {journey_log.outstanding_charges}.by described_class::PENALTY_FARE
-    end
 
     describe 'in_journey?' do
       it 'Is in journey' do
@@ -59,9 +56,6 @@ describe JourneyLog do
       expect(journey_log.instance_variable_get(:@current_journey)).to be_nil
     end
 
-    it 'charges penalty when finishing journey again' do
-      expect {journey_log.finish(exit_station)}.to change {journey_log.outstanding_charges}.by described_class::PENALTY_FARE
-    end
     describe 'in_journey?' do
       it 'Is in journey' do
         expect(journey_log.in_journey?).to be false
