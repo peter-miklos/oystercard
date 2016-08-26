@@ -1,6 +1,6 @@
 class JourneyLog
 
-  PENALTY_FARE = 6
+  PENALTY_FARE = 6 #moved to journey class should be deleted
 
   def initialize(journey_class = Journey)
     @journey_class = journey_class
@@ -16,7 +16,7 @@ class JourneyLog
 
   def finish(exit_station)
     no_touch_in unless in_journey?
-    current_journey.finish(exit_station)
+    @outstanding_charges = current_journey.finish(exit_station) #1
     record_journey
     reset_journey
   end
@@ -44,7 +44,7 @@ class JourneyLog
   end
 
   def no_touch_out
-    @outstanding_charges += PENALTY_FARE
+    #@outstanding_charges += PENALTY_FARE
     finish(nil)
   end
 

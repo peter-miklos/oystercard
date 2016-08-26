@@ -5,6 +5,8 @@
 
 class Journey
   MINIMUM_FARE = 1
+  PENALTY_FARE = 6
+
 
 attr_reader :fare
 
@@ -22,6 +24,10 @@ attr_reader :fare
   private
 
   def calculate_fare
-    @fare = MINIMUM_FARE + (@entry_station.zone - @exit_station.zone).abs
+    if @entry_station != nil and @exit_station != nil
+      @fare = MINIMUM_FARE + (@entry_station.zone - @exit_station.zone).abs
+    else
+      PENALTY_FARE
+    end
   end
 end
